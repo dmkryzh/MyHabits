@@ -15,6 +15,8 @@ class HabitViewController: UIViewController {
     
     var saveCompletion: (() -> ())?
     
+    var reloadDetails: (() -> ())?
+    
     private var newHabbitName = ""
     
     var existingHabit: Habit? {
@@ -77,7 +79,6 @@ class HabitViewController: UIViewController {
     let inputField: UITextField = {
        let input = UITextField()
         input.tintColor = UIColor(named: "deepBlue")
-        //input.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         input.placeholder = "Бегать по утрам, вставать в 6 утра и т.п."
         input.addTarget(self, action: #selector(saveName), for: .editingChanged)
         input.toAutoLayout()
@@ -238,7 +239,7 @@ class HabitViewController: UIViewController {
             existingHabit!.date = datePicker.date
             existingHabit!.color = colorPicker.backgroundColor!
             HabitsStore.shared.habits[index!.item] = existingHabit!
-            dismiss(animated: true, completion: saveCompletion)
+            dismiss(animated: true, completion: reloadDetails)
         }
     }
     

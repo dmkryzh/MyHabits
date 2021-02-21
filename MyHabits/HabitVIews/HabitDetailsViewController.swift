@@ -16,7 +16,7 @@ class HabitDetailsViewController: UIViewController {
     var habit: Habit?
     
     var index: IndexPath?
-
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.toAutoLayout()
@@ -40,6 +40,7 @@ class HabitDetailsViewController: UIViewController {
         let rvc = HabitViewController()
         let navi = UINavigationController(rootViewController: rvc)
         rvc.delegate = self
+        rvc.reloadDetails = { self.title = HabitsStore.shared.habits[self.index!.item].name }
         rvc.existingHabit = habit!
         rvc.index = index
         present(navi, animated: true, completion: nil)

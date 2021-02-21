@@ -13,6 +13,7 @@ protocol HabitsDelegate {
 
 class HabitsViewController: UIViewController {
     
+    
     let layout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -79,6 +80,7 @@ class HabitsViewController: UIViewController {
         view.addSubview(collectionView)
         NSLayoutConstraint.activate(constraints)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadProgress), name: NSNotification.Name(rawValue: "ticked"), object: nil)
+        
     }
     
     
