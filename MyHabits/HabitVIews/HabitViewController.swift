@@ -11,20 +11,16 @@ class HabitViewController: UIViewController {
     
     weak var delegate: HabitDetailsDelegate?
     
-    var index: IndexPath?
-    
-    var saveCompletion: (() -> ())?
-    
-    var reloadDetails: (() -> ())?
-    
-    private var newHabbitName = ""
+    var someCompletion: (() -> ())?
+ 
+    private var newHabitName = ""
     
     var existingHabit: Habit? {
         didSet {
             inputField.text = existingHabit!.name
             colorPicker.backgroundColor = existingHabit!.color
             datePicker.date = existingHabit!.date
-            bottomLabel.isHidden = false
+            bottomButton.isHidden = false
         }
     }
     
@@ -34,20 +30,21 @@ class HabitViewController: UIViewController {
         return scrollView
     }()
     
-    let contentContaier: UIView = {
+    let contentContainer: UIView = {
         let container = UIView()
         container.toAutoLayout()
         return container
     }()
     
-    let bottomLabel: UILabel = {
-       let label = UILabel()
-        label.text = "Удалить привычку"
-        label.textColor = .red
-        label.toAutoLayout()
-        label.isHidden = true
-        label.isUserInteractionEnabled = true
-        return label
+    let bottomButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = .clear
+        button.setTitle("Удалить привычку", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.toAutoLayout()
+        button.isHidden = true
+        button.addTarget(self, action: #selector(deleteHabit), for: .touchUpInside)
+        return button
     }()
     
 //MARK: ALERT POPUP
@@ -68,10 +65,10 @@ class HabitViewController: UIViewController {
     
     let actionCancel = UIAlertAction(title: "Cancel", style: .cancel)
     
-    let habbitName: UILabel = {
+    let habitName: UILabel = {
        let label = UILabel()
         label.text = "НАЗВАНИЕ"
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         label.toAutoLayout()
         return label
     }()
@@ -89,7 +86,7 @@ class HabitViewController: UIViewController {
     let color: UILabel = {
        let label = UILabel()
         label.text = "ЦВЕТ"
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         label.toAutoLayout()
         return label
     }()
@@ -106,7 +103,7 @@ class HabitViewController: UIViewController {
     let time: UILabel = {
        let label = UILabel()
         label.text = "ВРЕМЯ"
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         label.toAutoLayout()
         return label
     }()
@@ -137,14 +134,14 @@ class HabitViewController: UIViewController {
         
         let stackView = UIStackView()
         stackView.toAutoLayout()
-        stackView.addArrangedSubview(habbitName)
+        stackView.addArrangedSubview(habitName)
         stackView.addArrangedSubview(inputField)
         stackView.addArrangedSubview(color)
         stackView.addSubview(colorPicker)
         stackView.addArrangedSubview(colorPicker)
         stackView.addArrangedSubview(time)
         stackView.addArrangedSubview(everyDayAt)
-        stackView.setCustomSpacing(7, after: habbitName)
+        stackView.setCustomSpacing(7, after: habitName)
         stackView.setCustomSpacing(15, after: inputField)
         stackView.setCustomSpacing(7, after: color)
         stackView.setCustomSpacing(15, after: colorPicker)
@@ -172,35 +169,31 @@ class HabitViewController: UIViewController {
         scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         
-        contentContaier.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 22),
-        contentContaier.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-        contentContaier.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-        contentContaier.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-        contentContaier.heightAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.heightAnchor),
-        contentContaier.widthAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.widthAnchor),
+        contentContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 22),
+        contentContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+        contentContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+        contentContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+        contentContainer.heightAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.heightAnchor),
+        contentContainer.widthAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.widthAnchor),
         
-        stackView.topAnchor.constraint(equalTo: contentContaier.topAnchor),
-        stackView.leadingAnchor.constraint(equalTo: contentContaier.leadingAnchor, constant: 16),
-        stackView.trailingAnchor.constraint(equalTo: contentContaier.trailingAnchor, constant: -16),
+        stackView.topAnchor.constraint(equalTo: contentContainer.topAnchor),
+        stackView.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor, constant: 16),
+        stackView.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor, constant: -16),
         
         datePicker.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 15),
-        datePicker.leadingAnchor.constraint(equalTo: contentContaier.leadingAnchor, constant: 16),
-        datePicker.trailingAnchor.constraint(equalTo: contentContaier.trailingAnchor, constant: -16),
+        datePicker.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor, constant: 16),
+        datePicker.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor, constant: -16),
         
-        bottomLabel.centerXAnchor.constraint(equalTo: contentContaier.centerXAnchor),
-        bottomLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+        bottomButton.centerXAnchor.constraint(equalTo: contentContainer.centerXAnchor),
+        bottomButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
         
     ]
     
     //MARK: FUNCTIONS
     
     @objc func deleteHabit() {
+        guard let _ = existingHabit else { return }
         present(alert, animated: true, completion: nil)
-    }
-    
-    func deleteHabitGesture() {
-        let deleteHabitGesture = UITapGestureRecognizer(target: self, action: #selector(deleteHabit))
-        bottomLabel.addGestureRecognizer(deleteHabitGesture)
     }
     
     @objc func updateDate() {
@@ -222,24 +215,25 @@ class HabitViewController: UIViewController {
     }
     
     @objc func saveName(_ text: UITextField) {
-        newHabbitName = text.text!
+        newHabitName = text.text!
     }
     
     @objc func addHabit() {
         if existingHabit == nil {
-        let newHabit = Habit(name: newHabbitName,
+        let newHabit = Habit(name: newHabitName,
                              date: datePicker.date,
                              color: colorPicker.backgroundColor!)
             HabitsStore.shared.habits.append(newHabit)
-            dismiss(animated: true, completion: saveCompletion)
+            dismiss(animated: true, completion: someCompletion)
         }
         
         else {
             existingHabit!.name = inputField.text ?? ""
             existingHabit!.date = datePicker.date
             existingHabit!.color = colorPicker.backgroundColor!
-            HabitsStore.shared.habits[index!.item] = existingHabit!
-            dismiss(animated: true, completion: reloadDetails)
+            let index = HabitsStore.shared.habits.firstIndex(where: {$0 == existingHabit!})
+            HabitsStore.shared.habits[index!] = existingHabit!
+            dismiss(animated: true, completion: someCompletion)
         }
     }
     
@@ -293,16 +287,14 @@ class HabitViewController: UIViewController {
         view.backgroundColor = .white
         navContSettings()
         view.addSubview(scrollView)
-        scrollView.addSubview(contentContaier)
-        contentContaier.addSubviews(stackView, datePicker, bottomLabel)
+        scrollView.addSubview(contentContainer)
+        contentContainer.addSubviews(stackView, datePicker, bottomButton)
         NSLayoutConstraint.activate(constraints)
         stackView.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh, for: NSLayoutConstraint.Axis.vertical)
         moveToColorPickerGesture()
-        deleteHabitGesture()
         updateDate()
         //если передана дата, то выставляем её как изначальную
-        guard let _ = existingHabit?.date else { return }
-        datePicker.setDate(existingHabit!.date, animated: false)
+        if let date = existingHabit?.date { datePicker.setDate(date, animated: false) }
     }
     
 }
@@ -313,5 +305,6 @@ extension HabitViewController: UIColorPickerViewControllerDelegate {
         let color = viewController.selectedColor
         self.colorPicker.backgroundColor = color
     }
+    
 }
 

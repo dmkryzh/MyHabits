@@ -15,8 +15,6 @@ class HabitDetailsViewController: UIViewController {
     
     var habit: Habit?
     
-    var index: IndexPath?
-    
     lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.toAutoLayout()
@@ -34,15 +32,19 @@ class HabitDetailsViewController: UIViewController {
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
     ]
     
+    
+    
 //MARK: FUNCTIONS
     @objc func moveToHabit() {
-        print("tap")
+        guard habit != nil else { return }
         let rvc = HabitViewController()
         let navi = UINavigationController(rootViewController: rvc)
         rvc.delegate = self
-        rvc.reloadDetails = { self.title = HabitsStore.shared.habits[self.index!.item].name }
         rvc.existingHabit = habit!
-        rvc.index = index
+        rvc.someCompletion = {
+            let index = HabitsStore.shared.habits.firstIndex(where: {$0 == self.habit!})
+            self.title = HabitsStore.shared.habits[index!].name
+        }
         present(navi, animated: true, completion: nil)
 
     }
@@ -86,10 +88,7 @@ extension HabitDetailsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        var calender = Calendar.current
-        calender.timeZone = TimeZone.current
-        
+
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: HabitDetailsTableViewCell.self), for: indexPath) as! HabitDetailsTableViewCell
         let sortedDates = HabitsStore.shared.dates.sorted(by: >)
         let date = sortedDates[indexPath.item]

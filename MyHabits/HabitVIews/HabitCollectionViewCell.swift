@@ -100,6 +100,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }
 
     @objc func trackHabit() {
+        guard let _ = habit else { return }
         colorCircle.backgroundColor = habit!.color
         tick.isHidden = false
         HabitsStore.shared.track(habit!)

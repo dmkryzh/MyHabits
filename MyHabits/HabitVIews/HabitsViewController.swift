@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol HabitsDelegate {
-    func reloadCells()
-}
-
 class HabitsViewController: UIViewController {
     
     
@@ -34,10 +30,10 @@ class HabitsViewController: UIViewController {
     
     
     lazy var constraints = [
-        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-        collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-        collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
     ]
     
     //MARK: FUNCTIONS
@@ -46,9 +42,7 @@ class HabitsViewController: UIViewController {
         let rvc = HabitViewController()
         let navi = UINavigationController(rootViewController: rvc)
         //передаю комплишн чтобы обновлялся список с ячейками после закрытия
-        rvc.saveCompletion = {
-           self.collectionView.reloadData()
-        }
+        rvc.someCompletion = { self.collectionView.reloadData() }
         present(navi, animated: true, completion: nil)
     }
     
@@ -123,13 +117,20 @@ extension HabitsViewController: UICollectionViewDataSource {
             habitCell.habit = habit
             habitCell.layer.cornerRadius = 8
             
+            // считаем сколько раз ПОДРЯД юзер трекнул привычку
+            
             var datesCount = HabitsStore.shared.dates.count - 1
             var count = 0
-            while datesCount != 0 {
+            
+            while datesCount > 0 {
                 if HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[datesCount]) && HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[datesCount - 1]) {
                     count += 1
                 }
                 datesCount -= 1
+            }
+            
+            if count > 0 {
+                count += 1
             }
 
             habitCell.inSequence.text = "Подряд: \(count)"
@@ -173,15 +174,7 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
         let details = HabitDetailsViewController()
         details.title = HabitsStore.shared.habits[indexPath.item].name
         details.habit = habit
-        details.index = indexPath
         navigationController?.pushViewController(details, animated: true)
-    }
-    
-}
-
-extension HabitsViewController: HabitsDelegate {
-    func reloadCells() {
-        self.collectionView.reloadData()
     }
     
 }

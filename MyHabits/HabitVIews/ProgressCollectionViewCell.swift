@@ -34,8 +34,6 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     
     var percents: UILabel = {
         let percents = UILabel()
-        let incommingFloat = Int(HabitsStore.shared.todayProgress * 100)
-        percents.text = "\(incommingFloat)%"
         percents.textColor = UIColor.systemGray
         percents.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         percents.toAutoLayout()
