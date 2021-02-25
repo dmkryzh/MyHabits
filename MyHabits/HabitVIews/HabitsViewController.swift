@@ -82,7 +82,7 @@ class HabitsViewController: UIViewController {
         super.viewWillAppear(animated)
         collectionView.reloadData()
     }
-
+    
 }
 
 //MARK: CV DATA SOURCE
@@ -119,33 +119,37 @@ extension HabitsViewController: UICollectionViewDataSource {
             
             // считаем сколько раз ПОДРЯД юзер трекнул привычку
             
-            var datesCount = HabitsStore.shared.dates.count - 1
+            var item = 0
             var count = 0
             
-            while datesCount > 0 {
-                if HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[datesCount]) && HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[datesCount - 1]) {
+            while item < HabitsStore.shared.dates.count - 1 {
+                if HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[item]) && HabitsStore.shared.habit(habit, isTrackedIn: HabitsStore.shared.dates[item + 1])
+                {
                     count += 1
                 }
-                datesCount -= 1
+                else {
+                    count = 0
+                }
+                item += 1
             }
             
             if count > 0 {
                 count += 1
             }
-
+            
             habitCell.inSequence.text = "Подряд: \(count)"
-
+            
             return habitCell
         }
         
     }
-
+    
 }
 
 //MARK: CV DELEGATE FLOW
 
 extension HabitsViewController: UICollectionViewDelegateFlowLayout {
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0:
@@ -179,4 +183,4 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
     
 }
 
-    
+
