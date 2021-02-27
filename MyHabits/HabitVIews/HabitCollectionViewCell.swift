@@ -11,8 +11,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
     
     var habit: Habit? {
         didSet {
-            habbitName.text = habit!.name
-            habbitName.textColor = habit!.color
+            habitName.text = habit!.name
+            habitName.textColor = habit!.color
             everyTimeAt.text = habit!.dateString
             colorCircle.layer.borderColor = habit!.color.cgColor
             colorCircle.backgroundColor = .white
@@ -22,7 +22,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    var habbitName: UILabel = {
+    var habitName: UILabel = {
        let label = UILabel()
         label.text = ""
         label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
@@ -70,11 +70,11 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }()
     
     lazy var newConstraints = [
-        habbitName.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
-        habbitName.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-        habbitName.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
+        habitName.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
+        habitName.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+        habitName.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.5),
 
-        everyTimeAt.topAnchor.constraint(equalTo: habbitName.bottomAnchor, constant: 4),
+        everyTimeAt.topAnchor.constraint(equalTo: habitName.bottomAnchor, constant: 4),
         everyTimeAt.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
 
         inSequence.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
@@ -114,7 +114,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        addSubviews(habbitName, everyTimeAt, inSequence, colorCircle, tick)
+        addSubviews(habitName, everyTimeAt, inSequence, colorCircle, tick)
         NSLayoutConstraint.activate(newConstraints)
         tickHabitGesture()
 

@@ -59,6 +59,7 @@ class HabitsViewController: UIViewController {
         navigationController?.navigationBar.topItem?.standardAppearance = naviBarAppearance
         navigationController?.navigationBar.topItem?.compactAppearance = naviBarAppearance
         navigationController?.navigationBar.topItem?.scrollEdgeAppearance = naviBarAppearance
+        
     }
     
     @objc func reloadProgress() {
@@ -81,6 +82,11 @@ class HabitsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
     }
     
 }
@@ -176,10 +182,13 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
         guard indexPath.section == 1 else { return }
         let habit = HabitsStore.shared.habits[indexPath.item]
         let details = HabitDetailsViewController()
-        details.title = HabitsStore.shared.habits[indexPath.item].name
         details.habit = habit
         navigationController?.pushViewController(details, animated: true)
     }
+    
+}
+
+extension UINavigationController {
     
 }
 

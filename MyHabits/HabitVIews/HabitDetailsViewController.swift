@@ -41,9 +41,9 @@ class HabitDetailsViewController: UIViewController {
         let navi = UINavigationController(rootViewController: rvc)
         rvc.delegate = self
         rvc.existingHabit = habit!
+        rvc.modalTransitionStyle = .flipHorizontal
         rvc.someCompletion = {
-            let index = HabitsStore.shared.habits.firstIndex(where: {$0 == self.habit!})
-            self.title = HabitsStore.shared.habits[index!].name
+            self.viewWillAppear(true)
         }
         present(navi, animated: true, completion: nil)
 
@@ -59,6 +59,18 @@ class HabitDetailsViewController: UIViewController {
         view.addSubview(tableView)
         NSLayoutConstraint.activate(constraints)
  
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard habit != nil else { return }
+        let index = HabitsStore.shared.habits.firstIndex(where: {$0 == self.habit!})
+        title = HabitsStore.shared.habits[index!].name
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
     }
     
 }

@@ -38,7 +38,12 @@ class TabBarViewController: UITabBarController {
 
         let tabBarList = [habits, info]
 
-       viewControllers = tabBarList.map { UINavigationController(rootViewController: $0)}
+        viewControllers = tabBarList.map { UINavigationController(rootViewController: $0) }
+   
+        
+        
+        
+    
 
     }
     
