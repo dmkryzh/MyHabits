@@ -93,20 +93,12 @@ extension HabitDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: HabitDetailsTableViewCell.self), for: indexPath) as! HabitDetailsTableViewCell
+        
         let sortedDates = HabitsStore.shared.dates.sorted(by: >)
         let date = sortedDates[indexPath.item]
-        
-        switch Date().distance(from: date, only: .day) {
-        case 0:
-            cell.textLabel?.text = "Сегодня"
-        case 1:
-            cell.textLabel?.text = "Вчера"
-        case 2:
-            cell.textLabel?.text = "Позавчера"
-        default:
-            cell.textLabel?.text = date.getFormattedDate(format: "d EEEE yyyy")
-        }
-    
+     
+        cell.textLabel?.text = HabitsStore.shared.trackDateString(forIndex: HabitsStore.shared.dates.count - 1 - indexPath.item)
+
         guard HabitsStore.shared.habit(habit!, isTrackedIn: date) else { return cell }
         cell.accessoryType = .checkmark
         
